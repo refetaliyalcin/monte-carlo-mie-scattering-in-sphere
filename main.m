@@ -2,27 +2,13 @@ clc
 clear all
 close all
 
-%solution of radiative transfer equation in one layer pigmented plane parallel medium
-%ray is incident from air to coating. coating is coated on a substrate
-%substrate could be air or other material such as silver, glass etc.
-%the code estimates spectral hemispherical reflectance, transmittance and absorptance
-%can handle; independent scattering, boundary reflections, absorption in
-%medium. can't handle; coherent backscattering, dependent scattering and polarized ray tracing.
-%while calculating the scattering direction the code uses cumulative inverse
-%relation of exact single scattering pahse function or henyey greenstein 
-%function approximation depending on choice 
 
-
-
-lambda=(500)*10^-9; %freespace wavelength of incident ray in meter 
-R=100*10^-6;  %thickness of coating in meter 
-pigment_radius=150*10^-9; %radius of particle in meter 
-f_v=0.01; %volume fraction. 0.01 corresponds to 1% 
+lambda=500*10^-9; %freespace wavelength of incident ray in meter 
+R=100*10^-6;  %radius of medium in meter 
+pigment_radius=150*10^-9; %radius of particles in meter 
+f_v=0.01; %particle volume fraction. 0.01 corresponds to 1% 
 use_HG=0; %if 0 use exact scattering phase function, if 1 uses henyey greenstein phase function approximation
 
-
-% n_pigment=sio2_n(lambda);  %real refractive index of pigment
-% k_pigment=sio2_k(lambda);  %imaginary refractive index of pigment
 n_pigment=1.5;  %real refractive index of pigment
 k_pigment=0;  %imaginary refractive index of pigment
 n_medium=1; %real refractive index of medium
@@ -86,7 +72,15 @@ end
 toc
 
 scat_ph_fn=Mie_phasefn(m, x, 180)/(x*x*Qsca);%scattering phase function
-figure
+
+
+set(0, 'DefaultLineLineWidth', 2); %set thickness of all the lines = 2
+figure('Renderer', 'painters', 'Position', [500 300 428 420]) % starting point and height - width of the frame
+
+set(gca, 'ColorOrder', [0 0 0;0 0 1; 1 0 0;0 0.5 0;0.75, 0.75, 0], 'NextPlot', 'replacechildren');% color of lines in the plot with the given order. remember it is periodic
+
+hAx=gca;
+
 degrees=linspace(0,pi,length(acilar));
 % acilar(1:2)=acilar(3:4);
 % acilar(end-1:end)=acilar(end-3:end-2);
@@ -96,21 +90,45 @@ plot(linspace(0,180,length(acilar)),degerler)
 hold on
 plot(linspace(0,180,length(scat_ph_fn)),scat_ph_fn)
 
+y_max=1.05*max([max(scat_ph_fn),max(degerler)]);
 
-g_mie=trapz(cos(degrees),-scat_ph_fn'.*cos(degrees))
-g
-g_mc=trapz(cos(degrees),-degerler'.*cos(degrees))
+hAx.XColor = [0 0 0];
+hAx.YColor = [0 0 0];
+hAx.LineWidth = 1.5;
+axis square
+hLg=legend('Sphere','Single particle (Mie theory)','Location','east');
+hLg.LineWidth=1.5;
+hLg.EdgeColor = [0 0 0];
+xlabel('Angle between entrance and exit [\circ]')
+ylh=ylabel('Asymmetry factor, g');
+ylh.VerticalAlignment	= 'bottom'; %if it is not alligned well, try 'top' and 'bottom' too
+xlim([0 180])
+ylim([0 y_max])
+set(gca,'FontSize',13)
+box on
 
 
-
+g_mie=trapz(cos(degrees),-scat_ph_fn'.*cos(degrees));
+g_mc=trapz(cos(degrees),-degerler'.*cos(degrees));
 diffuse_tra=tra_lambda-tra_direct_lambda;
 donme_compare=diffuse_tra+ref_lambda; %
 
 averge_scattering_no=donme/donme_compare
 
-% figure %draw normal to diffuse R, T and A for normal incidence (first index in my case)
-% plot(lambda_nm,ref_lambda,lambda_nm,tra_lambda,lambda_nm,abs_lambda,lambda_nm,tra_direct_lambda,'LineWidth',2)
-% ylim([0 1])
-% xlim([min(lambda_nm) max(lambda_nm)])
-% legend('Reflectance','Transmittance','Absorptance','Direct Transmittance','Location', 'Best')
-% xlabe
+txt1 = ['g_m_i_e = ' num2str(g_mie,3)];
+txt2 = ['g_s_p_h = ' num2str(g_mc,3)];
+txt3 = ['avg # of scat. event = ' num2str(averge_scattering_no,3)];
+text(10,0.95*y_max,txt1,'FontSize',13)
+text(10,0.85*y_max,txt2,'FontSize',13)
+text(10,0.75*y_max,txt3,'FontSize',13)
+
+xticks([0,45,90,135,180])
+xticklabels({'0','45','90','135','180'})
+
+saveas(gcf,'fig.png')
+saveas(gcf,'fig.emf')
+saveas(gcf,'fig.fig')
+
+
+
+
