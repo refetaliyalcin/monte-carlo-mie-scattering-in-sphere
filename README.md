@@ -6,22 +6,12 @@ works on MATLAB
 
 can work in parallel or on a single core
 
-solution of radiative transfer equation in one layer pigmented plane parallel medium using Lorenz Mie theory
+solution of radiative transfer equation in spherical medium using Lorenz Mie theory
 
-ray is incident from air to coating. coating is coated on a substrate
+parallel plane rays are incident from air to sphere. 
 
-substrate could be air or other material such as silver, glass etc.
-
-the code estimates spectral hemispherical reflectance, transmittance and absorptance
-
-can handle; independent scattering, boundary reflections, absorption in medium. 
-
-can't handle; coherent backscattering, dependent scattering and polarized ray tracing.
+the code estimates assymetry parameter of a large sphere 
 
 while calculating the scattering direction the code uses cumulative inverse relation of exact single scattering pahse function or henyey greenstein function approximation depending on choice 
 
-a similar version works on GPU is here: https://github.com/refetaliyalcin/ColorRCMC
-
 if you encounter any problem you can contact me from refetali@gmail.com
-
-in case of use, please cite the article as:, Colored Radiative Cooling Coatings with Nanoparticles, ACS Photonics, Refet Ali Yalçın, Etienne Blandre, Karl Joulain, Jeremie Drevillon, https://doi.org/10.1021/acsphotonics.0c00513
