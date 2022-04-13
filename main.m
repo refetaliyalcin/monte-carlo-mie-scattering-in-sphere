@@ -4,8 +4,8 @@ close all
 
 
 lambda=500*10^-9; %freespace wavelength of incident ray in meter 
-R=100*10^-6;  %radius of medium in meter 
-pigment_radius=150*10^-9; %radius of particles in meter 
+R=500*10^-6;  %radius of medium in meter 
+pigment_radius=10*10^-9; %radius of particles in meter 
 f_v=0.01; %particle volume fraction. 0.01 corresponds to 1% 
 use_HG=0; %if 0 use exact scattering phase function, if 1 uses henyey greenstein phase function approximation
 
@@ -14,7 +14,7 @@ k_pigment=0;  %imaginary refractive index of pigment
 n_medium=1; %real refractive index of medium
 k_medium=0; %imaginary refractive index of medium
 
-photon_number=10^6; %number of rays that will be traced, higher the number more accurate the result
+photon_number=10^7; %number of rays that will be traced, higher the number more accurate the result
 n_cdf_random=1000; %how many pieces will be between (0,1) in random number relation with inverse cumulative function, higher the number accurate the phase function. useless if HG is used
 nang_gid=1000; %how many pieces will be between (0,pi) in cumulative distribution function, higher the number more accurate the result. useless if HG is used
 
@@ -82,8 +82,8 @@ set(gca, 'ColorOrder', [0 0 0;0 0 1; 1 0 0;0 0.5 0;0.75, 0.75, 0], 'NextPlot', '
 hAx=gca;
 
 degrees=linspace(0,pi,length(acilar));
-% acilar(1:2)=acilar(3:4);
-% acilar(end-1:end)=acilar(end-3:end-2);
+acilar(1:2)=acilar(3:4);
+acilar(end-1:end)=acilar(end-3:end-2);
 acilar(isinf(acilar)|isnan(acilar)) = 0;
 degerler=acilar/trapz(cos(degrees),-acilar);
 plot(linspace(0,180,length(acilar)),degerler)
@@ -96,11 +96,11 @@ hAx.XColor = [0 0 0];
 hAx.YColor = [0 0 0];
 hAx.LineWidth = 1.5;
 axis square
-hLg=legend('Sphere','Single particle (Mie theory)','Location','east');
+hLg=legend('Sphere','Single particle (Mie theory)','Location','south');
 hLg.LineWidth=1.5;
 hLg.EdgeColor = [0 0 0];
 xlabel('Angle between entrance and exit [\circ]')
-ylh=ylabel('Asymmetry factor, g');
+ylh=ylabel('Magnitude');
 ylh.VerticalAlignment	= 'bottom'; %if it is not alligned well, try 'top' and 'bottom' too
 xlim([0 180])
 ylim([0 y_max])
@@ -128,7 +128,3 @@ xticklabels({'0','45','90','135','180'})
 saveas(gcf,'fig.png')
 saveas(gcf,'fig.emf')
 saveas(gcf,'fig.fig')
-
-
-
-
